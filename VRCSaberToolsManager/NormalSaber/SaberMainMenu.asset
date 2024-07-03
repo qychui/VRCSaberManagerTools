@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -340790334, guid: 67cc4cb7839cd3741b63733d5adf0442, type: 3}
+  m_Name: SaberMainMenu
+  m_EditorClassIdentifier: 
+  controls:
+  - name: LeftSetting
+    icon: {fileID: 0}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: 46fcc6b7e1ef50e468e4bca584080ebd, type: 2}
+    subParameters: []
+    labels: []
+  - name: LeftSaber
+    icon: {fileID: 0}
+    type: 102
+    parameter:
+      name: SaberLToggle
+    value: 1
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: RightSaber
+    icon: {fileID: 0}
+    type: 102
+    parameter:
+      name: SaberRToggle
+    value: 1
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: RightSetting
+    icon: {fileID: 0}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: e64e6db3b8c347941a37471554a188d3, type: 2}
+    subParameters: []
+    labels: []
