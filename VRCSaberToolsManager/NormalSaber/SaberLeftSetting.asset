@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SaberLeftSetting
   m_EditorClassIdentifier: 
   controls:
-  - name: SaberPLX
+  - name: PositionX
     icon: {fileID: 0}
     type: 203
     parameter:
@@ -24,7 +24,7 @@ MonoBehaviour:
     subParameters:
     - name: SaberPLX
     labels: []
-  - name: SaberPLY
+  - name: PositionY
     icon: {fileID: 0}
     type: 203
     parameter:
@@ -35,7 +35,7 @@ MonoBehaviour:
     subParameters:
     - name: SaberPLY
     labels: []
-  - name: SaberPLZ
+  - name: PositionZ
     icon: {fileID: 0}
     type: 203
     parameter:
@@ -46,7 +46,7 @@ MonoBehaviour:
     subParameters:
     - name: SaberPLZ
     labels: []
-  - name: SaberRLX
+  - name: RotationX
     icon: {fileID: 0}
     type: 203
     parameter:
@@ -57,7 +57,7 @@ MonoBehaviour:
     subParameters:
     - name: SaberRLX
     labels: []
-  - name: SaberRLY
+  - name: RotationY
     icon: {fileID: 0}
     type: 203
     parameter:
@@ -68,7 +68,7 @@ MonoBehaviour:
     subParameters:
     - name: SaberRLY
     labels: []
-  - name: SaberRLZ
+  - name: RotationZ
     icon: {fileID: 0}
     type: 203
     parameter:
@@ -79,7 +79,7 @@ MonoBehaviour:
     subParameters:
     - name: SaberRLZ
     labels: []
-  - name: SaberSizeL
+  - name: Size
     icon: {fileID: 0}
     type: 203
     parameter:

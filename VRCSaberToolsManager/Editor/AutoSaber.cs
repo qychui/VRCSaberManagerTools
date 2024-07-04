@@ -131,8 +131,8 @@ public class NomalSaber : EditorWindow
         //TODO:
         EditorGUILayout.Space();
 
-        EditorGUILayout.HelpBox("安装需要消耗114数值的Parameter", MessageType.Info);
-        EditorGUILayout.LabelField($"当前可用值 {GlobalTotalParameter} + 114 : 256");
+        EditorGUILayout.HelpBox("安装需要消耗121数值的Parameter", MessageType.Info);
+        EditorGUILayout.LabelField($"当前可用值 {GlobalTotalParameter} + 121 : 256");
 
         EditorGUILayout.Space();
 
@@ -421,7 +421,7 @@ public class NomalSaber : EditorWindow
         HaveMenu:
 
             //判断值是否超过
-            if (GlobalTotalParameter + 114 > 256)
+            if (GlobalTotalParameter + 121 > 256)
             {
                 return;
             }

@@ -23,6 +23,16 @@ MonoBehaviour:
     subMenu: {fileID: 11400000, guid: 46fcc6b7e1ef50e468e4bca584080ebd, type: 2}
     subParameters: []
     labels: []
+  - name: RightSetting
+    icon: {fileID: 0}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: e64e6db3b8c347941a37471554a188d3, type: 2}
+    subParameters: []
+    labels: []
   - name: LeftSaber
     icon: {fileID: 0}
     type: 102
@@ -43,13 +53,14 @@ MonoBehaviour:
     subMenu: {fileID: 0}
     subParameters: []
     labels: []
-  - name: RightSetting
+  - name: SaberSwitch
     icon: {fileID: 0}
-    type: 103
+    type: 203
     parameter:
       name: 
     value: 1
     style: 0
-    subMenu: {fileID: 11400000, guid: e64e6db3b8c347941a37471554a188d3, type: 2}
-    subParameters: []
+    subMenu: {fileID: 0}
+    subParameters:
+    - name: SaberType
     labels: []
