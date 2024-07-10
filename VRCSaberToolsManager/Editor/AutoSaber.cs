@@ -207,6 +207,9 @@ public class NomalSaber : EditorWindow
 
         if (GUILayout.Button("清除所有配置"))
         {
+            DestroyImmediate(userAvatar.transform.Find("saberManagerL")?.gameObject);
+            DestroyImmediate(userAvatar.transform.Find("saberManagerR")?.gameObject);
+
             RemoveAddedObjs(userAvatar.transform);
             RemoveFxLayers();
             RemoveFxParamaters();
@@ -342,7 +345,10 @@ public class NomalSaber : EditorWindow
         {
             if (transform.name == "saberManagerXL" || transform.name == "saberManagerXR")
             {
-                DestroyImmediate(transform.gameObject);
+                if (!transform.IsDestroyed())
+                {
+                    DestroyImmediate(transform.gameObject);
+                }
             }
 
             if (!transform.IsDestroyed())
@@ -470,12 +476,12 @@ public class NomalSaber : EditorWindow
         {
             if (child.name == "Hand.L")
             {
-                //判断手上是否存在SaberManager的物体，没有就创建，有则添加
+                //判断手上是否存在SaberManager的物体，有则添加，没有就创建
                 if (child.transform.Find("saberManagerXL") != null && child.transform.Find("saberManagerXL/saberManagerYL") != null && child.transform.Find("saberManagerXL/saberManagerYL/saberManagerZL") != null)
                 {
                     //Debug.Log("找到了子物体");
-                    NewSaberObjectL.name = saberObjectL.name + "_SaberL";
-                    NewSaberObjectL.transform.parent = child.transform.Find("saberManagerXL/saberManagerYL/saberManagerZL");
+                    NewSaberObjectL.name = saberObjectL.name + "_Saber.L";
+                    NewSaberObjectL.transform.parent = userAvatar.transform.Find("saberManagerL");
                     NewSaberObjectL.transform.localPosition = Vector3.zero;
 
                     vectorChildL = child.position;
@@ -494,19 +500,25 @@ public class NomalSaber : EditorWindow
                     saberManagerXL.transform.localPosition = Vector3.zero;
                     saberManagerXL.transform.localRotation = Quaternion.identity;
 
-                    NewSaberObjectL.name = saberObjectL.name + "_Saber.L";
-                    NewSaberObjectL.transform.parent = saberManagerZL.transform;
-                    NewSaberObjectL.transform.localPosition = Vector3.zero;
+                    var constraint = new GameObject("TargetConstraintL");
+                    constraint.transform.parent = saberManagerZL.transform;
+                    constraint.transform.localPosition = Vector3.zero;
+                    constraint.transform.localRotation = Quaternion.identity;
+                    constraint.transform.localScale = Vector3.one;
 
+                    var saberManager = new GameObject("saberManagerL");
+                    saberManager.transform.parent = userAvatar.transform;
+                    saberManager.transform.localPosition = Vector3.zero;
+                    saberManager.transform.localRotation = Quaternion.identity;
+                    saberManager.transform.localScale = Vector3.one;
+
+                    NewSaberObjectL.name = saberObjectL.name + "_Saber.L";
+                    NewSaberObjectL.transform.parent = saberManager.transform;
+                    NewSaberObjectL.transform.localPosition = Vector3.zero;
 
                     vectorChildL = child.position;
                 }
 
-                //不获取坐标，改为直接绑定光剑位置
-                //NewSaberObjectL.name = saberObjectL.name + "_Saber.L";
-                //NewSaberObjectL.transform.parent = child;
-                //NewSaberObjectL.transform.localPosition = Vector3.zero;
-                //vectorChildL = child.position;
 
                 Debug.Log("匹配到左手");
                 BothHand++;
@@ -521,8 +533,8 @@ public class NomalSaber : EditorWindow
             {
                 if (child.transform.Find("saberManagerXR") != null && child.transform.Find("saberManagerXR/saberManagerYR") != null && child.transform.Find("saberManagerXR/saberManagerYR/saberManagerZR") != null)
                 {
-                    NewSaberObjectR.name = saberObjectR.name + "_SaberR";
-                    NewSaberObjectR.transform.parent = child.transform.Find("saberManagerXR/saberManagerYR/saberManagerZR");
+                    NewSaberObjectR.name = saberObjectR.name + "_Saber.R";
+                    NewSaberObjectR.transform.parent = userAvatar.transform.Find("saberManagerR");
                     NewSaberObjectR.transform.localPosition = Vector3.zero;
 
                     vectorChildR = child.position;
@@ -541,8 +553,20 @@ public class NomalSaber : EditorWindow
                     saberManagerXR.transform.localPosition = Vector3.zero;
                     saberManagerXR.transform.localRotation = Quaternion.identity;
 
+                    var constraint = new GameObject("TargetConstraintR");
+                    constraint.transform.parent = saberManagerZR.transform;
+                    constraint.transform.localPosition = Vector3.zero;
+                    constraint.transform.localRotation = Quaternion.identity;
+                    constraint.transform.localScale = Vector3.one;
+
+                    var saberManager = new GameObject("saberManagerR");
+                    saberManager.transform.parent = userAvatar.transform;
+                    saberManager.transform.localPosition = Vector3.zero;
+                    saberManager.transform.localRotation = Quaternion.identity;
+                    saberManager.transform.localScale = Vector3.one;
+
                     NewSaberObjectR.name = saberObjectR.name + "_Saber.R";
-                    NewSaberObjectR.transform.parent = saberManagerZR.transform;
+                    NewSaberObjectR.transform.parent = saberManager.transform;
                     NewSaberObjectR.transform.localPosition = Vector3.zero;
 
                     vectorChildR = child.position;
