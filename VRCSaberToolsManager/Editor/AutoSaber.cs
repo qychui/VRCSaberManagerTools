@@ -6,11 +6,7 @@ using System;
 using Unity.VisualScripting;
 using System.Collections.Generic;
 using System.Linq;
-using static UnityEditor.Experimental.GraphView.GraphView;
-using static VRC.SDK3.Avatars.ScriptableObjects.VRCExpressionsMenu;
-
-
-
+using UnityEngine.Animations;
 
 #if VRC_SDK_VRCSDK3
 using VRC.SDK3.Avatars.ScriptableObjects;
@@ -28,6 +24,7 @@ public class NomalSaber : EditorWindow
     string pathParamaters = "Assets/Qychui/VRCSaberToolsManager/NormalSaber/SaberParameters.asset";
 
     public bool isAutoSet;
+    public bool saberManagerToggle;
 
     public int languageChoice;
     public string[] languageAll = { "中文", "English", "日本語", "한국어" };
@@ -41,16 +38,20 @@ public class NomalSaber : EditorWindow
     public GameObject leftHandPoint;
     private GameObject NewSaberObjectL;
     private GameObject NewSaberObjectR;
+    private GameObject SaberManagerL;
+    private GameObject SaberManagerR;
 
     private int BothHand = 0;
 
-    private Vector3 vectorChildL = new Vector3(0, 0, 0);
-    private Vector3 vectorChildR = new Vector3(0, 0, 0);
+    private Vector3 vectorChildL = new(0, 0, 0);
+    private Vector3 vectorChildR = new(0, 0, 0);
 
     private float GetSaberMaxSize = 0;
     private Vector3 GetMaxLengthAxis = Vector3.zero;
 
     int GlobalTotalParameter = 0;
+
+    private List<Transform> AllItems = new();
 
     #endregion
 
@@ -64,7 +65,13 @@ public class NomalSaber : EditorWindow
 
     private void OnGUI()
     {
-        GUIStyle titleLabelStyle = new GUIStyle(GUI.skin.label)
+        //获取SaberManager下的所有SaberObject
+        if (userAvatar != null)
+        {
+            GetAllItems();
+        }
+
+        GUIStyle titleLabelStyle = new(GUI.skin.label)
         {
             alignment = TextAnchor.MiddleCenter,
             fontSize = 26,
@@ -107,6 +114,9 @@ public class NomalSaber : EditorWindow
             }
 
             GlobalTotalParameter = totalMemory;
+
+            SaberManagerL = userAvatar.transform.Find("saberManagerL")?.gameObject;
+            SaberManagerR = userAvatar.transform.Find("saberManagerR")?.gameObject;
         }
 
         saberObjectL = EditorGUILayout.ObjectField("左手光剑", saberObjectL, typeof(GameObject), true) as GameObject;
@@ -126,6 +136,14 @@ public class NomalSaber : EditorWindow
             leftHandPoint = EditorGUILayout.ObjectField("左手原点", leftHandPoint, typeof(GameObject), true) as GameObject;
             EditorGUILayout.Space();
             rightHandPoint = EditorGUILayout.ObjectField("右手原点", rightHandPoint, typeof(GameObject), true) as GameObject;
+        }
+
+        EditorGUILayout.Space();
+
+        saberManagerToggle = EditorGUILayout.Toggle("管理安装的光剑", saberManagerToggle);
+        if (saberManagerToggle == true)
+        {
+            AllItemsDataGrid();
         }
 
         //TODO:
@@ -221,6 +239,74 @@ public class NomalSaber : EditorWindow
         if (GUILayout.Button("清除"))
         {
             Close();
+        }
+    }
+
+    private void AllItemsDataGrid()
+    {
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Id", EditorStyles.boldLabel, GUILayout.MinWidth(30));
+        EditorGUILayout.LabelField("ItemName", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("Delete", EditorStyles.boldLabel, GUILayout.Width(60));
+        EditorGUILayout.EndHorizontal();
+
+        for (int i = 0; i < AllItems.Count; i++)
+        {
+            EditorGUILayout.BeginHorizontal();
+
+            EditorGUILayout.LabelField((i + 1).ToString(), GUILayout.MinWidth(30));
+
+            EditorGUILayout.LabelField(AllItems[i].name);
+
+            if (GUILayout.Button("Delete", GUILayout.Width(60)))
+            {
+                if (SaberManagerL != null && SaberManagerR != null)
+                {
+                    foreach (Transform item in SaberManagerL.transform)
+                    {
+                        if (item == AllItems[i])
+                        {
+                            DestroyImmediate(item.gameObject);
+                            break;
+                        }
+                    }
+
+                    foreach (Transform item in SaberManagerR.transform)
+                    {
+                        if (item == AllItems[i])
+                        {
+                            DestroyImmediate(item.gameObject);
+                            break;
+                        }
+                    }
+                }
+
+                AllItems.RemoveAt(i);
+            }
+
+            EditorGUILayout.EndHorizontal();
+        }
+    }
+
+    private void GetAllItems()
+    {
+        if (SaberManagerL != null && SaberManagerR != null)
+        {
+            foreach (Transform item in SaberManagerL.transform)
+            {
+                if (!AllItems.Contains(item))
+                {
+                    AllItems.Add(item);
+                }
+            }
+
+            foreach (Transform item in SaberManagerR.transform)
+            {
+                if (!AllItems.Contains(item))
+                {
+                    AllItems.Add(item);
+                }
+            }
         }
     }
 
@@ -432,7 +518,7 @@ public class NomalSaber : EditorWindow
                 return;
             }
 
-            List<VRCExpressionParameters.Parameter> newParameters = new List<VRCExpressionParameters.Parameter>();
+            List<VRCExpressionParameters.Parameter> newParameters = new();
 
             foreach (var parameter in expressionParameters.parameters)
             {
@@ -498,7 +584,6 @@ public class NomalSaber : EditorWindow
                     saberManagerXL.transform.parent = child;
 
                     saberManagerXL.transform.localPosition = Vector3.zero;
-                    saberManagerXL.transform.localRotation = Quaternion.identity;
 
                     var constraint = new GameObject("TargetConstraintL");
                     constraint.transform.parent = saberManagerZL.transform;
@@ -511,6 +596,20 @@ public class NomalSaber : EditorWindow
                     saberManager.transform.localPosition = Vector3.zero;
                     saberManager.transform.localRotation = Quaternion.identity;
                     saberManager.transform.localScale = Vector3.one;
+                    var parentConstraint = saberManager.transform.AddComponent<ParentConstraint>();
+                    var scaleConstraint = saberManager.transform.AddComponent<ScaleConstraint>();
+
+                    var constraintSource = new ConstraintSource();
+                    constraintSource.sourceTransform = constraint.transform;
+                    constraintSource.weight = 1.0f;
+
+                    parentConstraint.AddSource(constraintSource);
+                    parentConstraint.constraintActive = true;
+                    parentConstraint.locked = true;
+
+                    scaleConstraint.AddSource(constraintSource);
+                    scaleConstraint.constraintActive = true;
+                    scaleConstraint.locked = true;
 
                     NewSaberObjectL.name = saberObjectL.name + "_Saber.L";
                     NewSaberObjectL.transform.parent = saberManager.transform;
@@ -551,7 +650,6 @@ public class NomalSaber : EditorWindow
                     saberManagerXR.transform.parent = child;
 
                     saberManagerXR.transform.localPosition = Vector3.zero;
-                    saberManagerXR.transform.localRotation = Quaternion.identity;
 
                     var constraint = new GameObject("TargetConstraintR");
                     constraint.transform.parent = saberManagerZR.transform;
@@ -564,6 +662,20 @@ public class NomalSaber : EditorWindow
                     saberManager.transform.localPosition = Vector3.zero;
                     saberManager.transform.localRotation = Quaternion.identity;
                     saberManager.transform.localScale = Vector3.one;
+                    var parentConstraint = saberManager.transform.AddComponent<ParentConstraint>();
+                    var scaleConstraint = saberManager.transform.AddComponent<ScaleConstraint>();
+
+                    var constraintSource = new ConstraintSource();
+                    constraintSource.sourceTransform = constraint.transform;
+                    constraintSource.weight = 1.0f;
+
+                    parentConstraint.AddSource(constraintSource);
+                    parentConstraint.constraintActive = true;
+                    parentConstraint.locked = true;
+
+                    scaleConstraint.AddSource(constraintSource);
+                    scaleConstraint.constraintActive = true;
+                    scaleConstraint.locked = true;
 
                     NewSaberObjectR.name = saberObjectR.name + "_Saber.R";
                     NewSaberObjectR.transform.parent = saberManager.transform;
